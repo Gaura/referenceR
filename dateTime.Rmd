@@ -1,8 +1,31 @@
 ###Date and Time
 
 In R, date is and time belong to classes Date and POSIXct/POSIXlt respectively. Date is internally stored as in integer representing the number of days from 1-1-1970. POSIX probably stands for Portable Operating System Interface (POSIX) which are standards to ensure compatability b/w different OS. 'ct' stands for calendar time and 'lt' stands for local time. POSIXct stores the time as number of seconds since 1-1-1970 and POSIXlt stores it as a list of hour, min, sec, tzone (timezone) etc.
-```{r}
+```{r basic}
 Sys.Date() #To get current date, similarly for time Sys.time()
 unclass(Sys.Date()) #It'll be an integer, number of days since 1-1-1970
+```
+Checking internal representation
+```{r}
+t1 <- Sys.time() #default class is POSIXct, POSIXt is the parent class apparently
+t2 <- as.POSIXlt(Sys.time())
+unclass(t1) #how POSIXct is stored
+str(unclass(t2)) # how POSIXlt is stored
+```
+```{r}
+#functions such as 
+months(t2)
+weekdays(Sys.Date())
+quarters(t1)
+#can be used to get more information out of date and time objects
+```
+```{r}
+#Use strptime read as string parse time to parse string as time object
+?strptime
+```
+Arithmatic operations can also be performed on date and time objects
+```{r}
+t1 > t2
+difftime(t1,t2, units = 'mins')
 ```
 
