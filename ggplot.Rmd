@@ -1,0 +1,13 @@
+## Key points
+
+- use `aes_string` instead of `aes` in ggplot to use string instead of variable names for example
+```{r}
+library(ggplot2)
+ggplot(diamonds,aes(x = carat)) + geom_histogram(binwidth = 0.01)
+```
+But instead, if we want to use string `"carat"` we can use it by using "carat". The benefit is if we have column names and we want to plot ggplot programmatically, we can use `aes_string`
+```{r}
+cnames <- colnames(diamonds)
+ggplot(diamonds,aes_string(x = cnames[1])) + geom_histogram(binwidth = 0.01)
+```
+
