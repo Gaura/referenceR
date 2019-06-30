@@ -1,0 +1,6 @@
+## R Code optimization
+
+To optimize the R code, primarily to make it faster it is important to know where most of the
+time is spend. There are two functions that can be used for it. 
+1. `system.time()` which returns the amount of time spend in an expression within the funciton
+2. `Rprof()` R profiler - two types of normaliztion. 
