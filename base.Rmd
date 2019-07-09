@@ -1,0 +1,11 @@
+coloring factors in plot
+We can specify to color factors by writing col = levels in the plot argument
+```{r}
+library(kernlab)
+data(spam)
+sbsetSpam <- spam[sample(nrow(spam),10),]
+spamLevel <- (sbsetSpam$type == "spam")*1 + 1
+plot(sbsetSpam$capitalAve,col=spamLevel)
+#the red ones are spam, level has values 1 and 2 only
+```
+
