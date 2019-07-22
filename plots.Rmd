@@ -13,4 +13,9 @@ but without being a factor it misses the individual title.
 xyplot(Ozone ~ Wind | as.factor(Month), data = airquality, layout = c(5,1))
 xyplot(Ozone ~ Wind | Month, data = airquality, layout = c(5,1))
 ```
+It can be used even for generating plots for 2 conditions, price ~ carat conditioned on color and cut
+```{r}
+library(ggplot2)
+xyplot(price~carat | color*cut, data = diamonds, pch = 20, xlab = myxlab, ylab = myylab, main = mymain)
+```
 
