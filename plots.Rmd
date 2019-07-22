@@ -1,0 +1,16 @@
+## Lattice plotting system
+
+Lattice package for plotting is very efficient in visualizing data as large number of plots with few lines of
+code.
+```{r setup}
+library(lattice)
+library(datasets)
+```
+There is a difference in the plots if called with factor in lattice command. The first one which
+contains the argument as.factor(Month) plots the data with months as title for individual plots
+but without being a factor it misses the individual title.
+```{r}
+xyplot(Ozone ~ Wind | as.factor(Month), data = airquality, layout = c(5,1))
+xyplot(Ozone ~ Wind | Month, data = airquality, layout = c(5,1))
+```
+
