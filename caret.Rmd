@@ -1,0 +1,19 @@
+Here is a guide to using caret package in predictive modelling: https://www.r-project.org/conferences/useR-2013/Tutorials/kuhn/user_caret_2up.pdf
+
+It is a useful package that consists of functions that unify predictive models from different packages.
+It contains functions to do basic stuff like train test split in R.
+
+Setup
+```{r setup}
+library(kernlab)
+library(caret)
+```
+Creat data split
+```{r}
+?createDataPartition #shows up other useful functions as well
+data("spam")
+train <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
+training <- spam[train,]
+testing <- spam[-train,]
+```
+
