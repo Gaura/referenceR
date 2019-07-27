@@ -16,4 +16,8 @@ train <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
 training <- spam[train,]
 testing <- spam[-train,]
 ```
+This function creates a training model and the performance measured is calculated based on resampling meausure bootstrap
+```{r}
+model <- train(type ~ ., data = training, method = "glm")
+```
 
