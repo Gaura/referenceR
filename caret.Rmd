@@ -16,8 +16,12 @@ train <- createDataPartition(y = spam$type, p = 0.75, list = FALSE)
 training <- spam[train,]
 testing <- spam[-train,]
 ```
-This function creates a training model and the performance measured is calculated based on resampling meausure bootstrap
+This function creates a training model and the performance measured is calculated based on resampling measure bootstrap
 ```{r}
 model <- train(type ~ ., data = training, method = "glm")
+model$finalModel # to view the final model
+prediction <- predict(model,newdata= testing)
+prediction
+confusionMatrix(prediction,testing$type)
 ```
 
