@@ -70,3 +70,8 @@ prop.table(t1,1) # 1 is margin
 ```
 This shows that 34% of high wage jobs are held by college grads followed by adv degree holders with 30% of the jobs
 
+Let us check the same information visually using density plots
+```{r}
+qplot(wage,colour=education,data = trainData, geom = "density",ylab = "density")
+```
+This density plot is like prop.table but along the columns, it shows that adv degree holders have higher density at higher end of wages but their number may not be the highest, it is important to note that density is not the same as the numbers but is proportion within each education category
