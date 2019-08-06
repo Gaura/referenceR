@@ -11,6 +11,8 @@ library(ISLR)
 library(ggplot2)
 library(Hmisc) # cut function for breaking data into groups
 ```
+## Intro and exploration
+
 Creat data split
 ```{r}
 ?createDataPartition #shows up other useful functions as well
@@ -78,3 +80,31 @@ This density plot is like prop.table but along the columns, it shows that adv de
 
 MAKE YOUR PLOTS ONLY IN THE TRAINING DATA
 DO NOT USE THE TEST DATA FOR EXPLORATION
+
+## Pre-processing
+
+Pre processing is sometimes necessary because the variables might not be in suitable distribution for model, for example, the variable can be highly skewed with high standard deviation.
+```{r}
+hist(training$capitalAve,breaks = 100)
+# Average number of capital letters is a highly skewed variable
+mean(training$capitalAve)
+sd(training$capitalAve)
+```
+The mean is around 5 and sd is 35, we can standardize it by substracting the mean and dividing by standard devation
+```{r}
+trainCapitalAveS <- (training$capitalAve - mean(training$capitalAve))/sd(training$capitalAve)
+mean(trainCapitalAveS)
+sd(trainCapitalAveS)
+```
+It is important to note that while applying the model to the test set, we can only use the parameters we estimated from the training set. So for normalization, we would use the mean and
+standard deviation from the train set.
+
+The same thing as above can be done using the preProcess function of the caret package
+```{r}
+# 58 is type column spam or not
+preObj <- preProcess(training[,-58], method = c("scale","center"))
+trainCapitalAveS <- predict(preObj,training[,-58])$capitalAve
+# the same can be applied on the test data
+testCapAveS <- predict(preObj,testing[,-58])$capitalAve
+mean(testCapAveS)
+```
