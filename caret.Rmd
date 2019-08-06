@@ -24,4 +24,20 @@ prediction <- predict(model,newdata= testing)
 prediction
 confusionMatrix(prediction,testing$type)
 ```
+The train function comes with other bunch of arguments that might prove to be useful, for example it has metric argument to evalute the model performance, They are
+1. For continous y
+      - RMSE (default)
+      - R-squared
+2. For indicator y
+      - Accuracy
+      - Kappa
+To further control the parameters of the train function, we can use trainControl function
+```{r}
+?trainControl
+args(trainControl)
+```
+featurePlot in caret package to create a plot of the features
+```{r}
+
+```
 
