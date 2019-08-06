@@ -125,3 +125,27 @@ hist(trainCapitalAveS,breaks = 100)
 qqnorm(trainCapitalAveS)
 ```
 this step normalized the data and the values that are exactly zero or the same remain the same, which is why we see a flat line in the beginning of the qqnorm plot
+
+## data imputation
+```{r}
+set.seed(123)
+training$capAve <- training$capitalAve
+selectNA <- rbinom(nrow(training),size=1,prob = 0.05)==1
+training$capAve[selectNA] <- NA
+
+#imput the data and standardize
+preObj <- preProcess(training[,-58],method = "knnImpute") #impute based on 10 nearest neigbors
+capAve <- predict(preObj,training[,-58])$capAve
+
+#standardize the real data
+capAveTrue <- training$capitalAve
+capAveTrue <- (capAveTrue - mean(capAveTrue))/sd(capAveTrue)
+
+quantile(capAveTrue - capAve)
+quantile(capAveTrue - capAve)[selectNA] #Only those imputed
+quantile(capAveTrue - capAve)[!selectNA]
+```
+
+Training and test must be processed in the same way
+Only use parametes estimated from taining set
+
