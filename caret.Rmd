@@ -7,6 +7,9 @@ Setup
 ```{r setup}
 library(kernlab)
 library(caret)
+library(ISLR)
+library(ggplot2)
+library(Hmisc) # cut function for breaking data into groups
 ```
 Creat data split
 ```{r}
@@ -38,6 +41,25 @@ args(trainControl)
 ```
 featurePlot in caret package to create a plot of the features
 ```{r}
-
+data(Wage)
+trainSamples <- createDataPartition(Wage$wage,p=0.7,list = FALSE)
+trainData <- Wage[trainSamples,]
+testData <- Wage[-trainSamples,]
+featurePlot(x=trainData[,c("age","education","jobclass")],y=trainData$wage,plot = "pairs")
+```
+visualize trend, there seems to be positive cor b/w education and wages
+```{r}
+qp <- qplot(x = age, y = wage, data = trainData, color = education)
+qp + geom_smooth(method = "lm",formula = y ~ x)
+```
+We can break the age into categorical variables to see the relationship between wages and age clearly.
+One thing that we can do after the boxplot is to add points on the top of it so that we can see if the number of points are large in each set, otherwise if the points are not plotted we may not know
+if the change is real or artificail because of change in sample size
+```{r}
+cutWage <- cut2(trainData$wage,g=3)
+table(cutWage)
+p1 <- qplot(cutWage,age,fill=cutWage,data=trainData,geom = c("boxplot"))
+p2 <- qplot(cutWage,age,fill=cutWage,data=trainData,geom = c("boxplot","jitter"))
+grid.arrange(p1,p2,ncol=2)
 ```
 
