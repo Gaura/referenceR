@@ -54,7 +54,7 @@ qp + geom_smooth(method = "lm",formula = y ~ x)
 ```
 We can break the age into categorical variables to see the relationship between wages and age clearly.
 One thing that we can do after the boxplot is to add points on the top of it so that we can see if the number of points are large in each set, otherwise if the points are not plotted we may not know
-if the change is real or artificail because of change in sample size
+if the change is real or artificial because of change in sample size
 ```{r}
 cutWage <- cut2(trainData$wage,g=3)
 table(cutWage)
@@ -62,4 +62,11 @@ p1 <- qplot(cutWage,age,fill=cutWage,data=trainData,geom = c("boxplot"))
 p2 <- qplot(cutWage,age,fill=cutWage,data=trainData,geom = c("boxplot","jitter"))
 grid.arrange(p1,p2,ncol=2)
 ```
+Now let us see how how the wage classes are distributed among the education categories
+```{r}
+t1 <- table(cutWage,trainData$education)
+t1
+prop.table(t1,1) # 1 is margin
+```
+This shows that 34% of high wage jobs are held by college grads followed by adv degree holders with 30% of the jobs
 
