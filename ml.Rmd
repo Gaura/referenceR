@@ -96,7 +96,7 @@ trainCapitalAveS <- (training$capitalAve - mean(training$capitalAve))/sd(trainin
 mean(trainCapitalAveS)
 sd(trainCapitalAveS)
 ```
-It is important to note that while applying the model to the test set, we can only use the parameters we estimated from the training set. So for normalization, we would use the mean and
+It is important to note that while applying the model to the test set, we can only use the parameters we estimated from the training set. So for standardization, we would use the mean and
 standard deviation from the train set.
 
 The same thing as above can be done using the preProcess function of the caret package
@@ -108,3 +108,20 @@ trainCapitalAveS <- predict(preObj,training[,-58])$capitalAve
 testCapAveS <- predict(preObj,testing[,-58])$capitalAve
 mean(testCapAveS)
 ```
+Pre-processing can be done while training the model as well
+```{r}
+model <- train(type ~ ., data = training, preProcess=c("center","scale"), method = "glm")
+model
+```
+scale and centre takes care of skewed or biased transforms but in case you want to transform your data to be like a normal distribution box-cox transformation can be used. Since, some models have normality assumption on the features, this might be useful.
+```{r}
+#First let us look at the distribution with standardization
+hist(trainCapitalAveS,breaks = 100)
+#It looks the same but with less variability
+preObj <- preProcess(training[,-58],method = "BoxCox")
+trainCapitalAveS <- predict(preObj,training[,-58])$capitalAve
+par(mfrow=c(1,2))
+hist(trainCapitalAveS,breaks = 100)
+qqnorm(trainCapitalAveS)
+```
+this step normalized the data and the values that are exactly zero or the same remain the same, which is why we see a flat line in the beginning of the qqnorm plot
