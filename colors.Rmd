@@ -1,0 +1,17 @@
+---
+title: "colors"
+author: "Gaurav"
+date: "8/11/2019"
+output: html_document
+---
+
+```{r setup}
+library(grDevices)
+```
+
+The gray function interpolates b/w black(0) and white(1) 
+```{r gray}
+gray(1)
+gray(0.5)
+```
+
