@@ -14,4 +14,22 @@ The gray function interpolates b/w black(0) and white(1)
 gray(1)
 gray(0.5)
 ```
+colorRamp and colorRampPalette
+```{r}
+?colorRamp #returns function that takes value b/w 0 and 1 to return a color from the palette
+?colorRampPalette #returns function that takes integer argument for no of colors from the palette
+```
+
+```{r}
+pal <- colorRamp(c("red","blue"))
+pal(0)
+pal(1)
+pal(0.5)
+```
+```{r}
+pal <- colorRampPalette(c("red","yellow"))
+pal(1)
+pal(2)
+pal(10)
+```
 
