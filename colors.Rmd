@@ -8,6 +8,8 @@ output: html_document
 ```{r setup}
 library(grDevices)
 library(RColorBrewer)
+library(rafalib)
+library(ggplot2)
 ```
 
 The gray function interpolates b/w black(0) and white(1) 
@@ -46,5 +48,15 @@ image(volcano,col=pal(20))
 x <- rnorm(10000)
 y <- rnorm(10000)
 smoothScatter(x,y) #dark blue region is where most points are, high-density region
+```
+Alpha parameter can be used to get an idea of density as well
+```{r}
+plot(x,y,col=rgb(0,0,0,0.05), pch = 19)
+```
+myplclust function can be used to color the hclust object by categories
+```{r}
+dm <- dist(diamonds[1:100,5:10])
+clust <- hclust(dm)
+myplclust(clust,labels = diamonds$cut[1:100], lab.col = unclass(diamonds$cut[1:100]))
 ```
 
