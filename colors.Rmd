@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup}
 library(grDevices)
+library(RColorBrewer)
 ```
 
 The gray function interpolates b/w black(0) and white(1) 
@@ -31,5 +32,19 @@ pal <- colorRampPalette(c("red","yellow"))
 pal(1)
 pal(2)
 pal(10)
+```
+There are 3 types of palettes available from the RColorBrewer package:
+- Sequential: For ordered data, like cont data
+- Diverging: When representing diverging behaviour from something, for example data going in two different directions such as correlation, negative and postive
+- Qualitative: Not ordered, like factors
+```{r}
+cols <- brewer.pal(3,"BuGn") # the name needs to be looked from the help page
+pal <- colorRampPalette(cols)
+image(volcano,col=pal(20))
+```
+```{r}
+x <- rnorm(10000)
+y <- rnorm(10000)
+smoothScatter(x,y) #dark blue region is where most points are, high-density region
 ```
 
