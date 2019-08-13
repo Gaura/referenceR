@@ -158,4 +158,9 @@ testing <- Wage[-inTrain,]
 dummy <- dummyVars(wage ~ jobclass,data = training)
 head(predict(dummy,newdata = training))
 ```
+### Removing variables with zero variability
+```{r}
+nzv <- nearZeroVar(training, saveMetrics = T)
+nzv
+```
 
