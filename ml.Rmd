@@ -150,3 +150,12 @@ quantile(capAveTrue - capAve)[!selectNA]
 Training and test must be processed in the same way
 Only use parametes estimated from taining set
 
+### Creating dummy variables
+```{r}
+inTrain <- createDataPartition(Wage$wage,p=0.7,list = F)
+training <- Wage[inTrain,]
+testing <- Wage[-inTrain,]
+dummy <- dummyVars(wage ~ jobclass,data = training)
+head(predict(dummy,newdata = training))
+```
+
