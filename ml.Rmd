@@ -204,3 +204,61 @@ modelFit <- train(training$type ~ ., method = "glm", preProcess = "pca",data = t
 confusionMatrix(testing$type,predict(modelFit,testing))
 ```
 pca type prediction is useful for linear models and transformation such as BoxCox is advisable, however, it makes the interpretation difficult
+
+```{r}
+library(AppliedPredictiveModeling)
+data(concrete)
+library(caret)
+set.seed(1000)
+inTrain = createDataPartition(mixtures$CompressiveStrength, p = 3/4)[[1]]
+training = mixtures[ inTrain,]
+testing = mixtures[-inTrain,]
+```
+
+```{r}
+flyashcut <- cut2(training$FlyAsh,g = 2)
+agecut <- cut2(training$Age,g=3)
+qplot(1:nrow(training),training$CompressiveStrength,geom = "point",color=flyashcut)
+```
+
+```{r}
+library(caret)
+library(AppliedPredictiveModeling)
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+features <- colnames(training)
+```
+
+```{r}
+il <- grep('^IL',features)
+featuresIl <- features[il]
+prePro <- preProcess(training[,il],method = "pca",pcaComp = 11)
+pcaResult <- predict(prePro,training[,il])
+```
+```{r}
+trainingIl <- training[,c(il,1)]
+head(trainingIl)
+testingIl <- testing[,c(il,1)]
+```
+
+```{r}
+modelLm <- train(diagnosis ~ ., data = trainingIl, method = "glm")
+predictLm <- predict(modelLm,testingIl)
+confusionMatrix(testing$diagnosis,predictLm)
+```
+
+```{r}
+prePro <- preProcess(trainingIl[,-13],method = "pca", pcaComp = 7)
+trainPca <- predict(prePro,trainingIl[,-13])
+trainPca$diagnosis <- trainingIl$diagnosis
+modelPca <- train(diagnosis ~ ., data = trainPca, method = "glm")
+testPca <- predict(prePro,testingIl[,-13])
+testPca$diagnosis <- testingIl$diagnosis
+testResult <- predict(modelPca,testPca)
+confusionMatrix(testPca$diagnosis,testResult)
+```
+
