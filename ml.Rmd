@@ -177,3 +177,30 @@ points(training$age,predict(lm1,newdata=training),col="red",pch=19,cex=0.5)
 testAge <- predict(bsAge,age=testing$age) #getting the variable for the test data w/o seeing other variables
 ```
 
+with train preProcess = "pca" can be used to 
+```{r}
+data("spam")
+intrain <- createDataPartition(spam$type,p=0.75,list = F)
+training <- spam[intrain,]
+testing <- spam[-intrain,]
+typecolor <- ((spam$type == "spam")*1 + 1)
+```
+
+```{r}
+prePro <- preProcess(log10(spam[,-58] +1),method = "pca",pcaComp = 2)
+spamPC <- predict(prePro,log10(spam[,-58]+1))
+plot(spamPC,col=typecolor)
+```
+```{r}
+prePro <- preProcess(log10(training[,-58]+1),method = "pca",pcaComp = 2)
+trainPC <- predict(prePro,log10(training[,-58]+1))
+modelFit <- train(training$type ~ ., method="glm",data=trainPC)
+testPC <- predict(prePro,log10(testing[,-58]+1))
+confusionMatrix(testing$type,predict(modelFit,testPC))
+```
+alternatively
+```{r}
+modelFit <- train(training$type ~ ., method = "glm", preProcess = "pca",data = training)
+confusionMatrix(testing$type,predict(modelFit,testing))
+```
+pca type prediction is useful for linear models and transformation such as BoxCox is advisable, however, it makes the interpretation difficult
