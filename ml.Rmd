@@ -10,6 +10,7 @@ library(caret)
 library(ISLR)
 library(ggplot2)
 library(Hmisc) # cut function for breaking data into groups
+library(gridExtra)
 ```
 ## Intro and exploration
 
