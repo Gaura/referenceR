@@ -164,3 +164,16 @@ nzv <- nearZeroVar(training, saveMetrics = T)
 nzv
 ```
 
+If you want to account for higher-degree relationship between the y variable and predictors
+```{r}
+library(splines)
+bsAge <- bs(training$age,df=3)
+head(bsAge)
+```
+```{r}
+lm1 <- lm(wage ~ bsAge, data = training)
+plot(training$age,training$wage,pch=19,cex=0.5)
+points(training$age,predict(lm1,newdata=training),col="red",pch=19,cex=0.5)
+testAge <- predict(bsAge,age=testing$age) #getting the variable for the test data w/o seeing other variables
+```
+
