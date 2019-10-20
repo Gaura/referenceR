@@ -262,3 +262,18 @@ testResult <- predict(modelPca,testPca)
 confusionMatrix(testPca$diagnosis,testResult)
 ```
 
+Decision trees in R
+```{r}
+data("iris")
+inTrain <- createDataPartition(y=iris$Species,p=0.7,list = F)
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+```
+Building a decision tree
+```{r}
+modelFit <- train(Species ~ . , method = 'rpart',data = training)
+plot(modelFit$finalModel,uniform = T)
+library(rattle)
+fancyRpartPlot(modelFit$finalModel)
+```
+
