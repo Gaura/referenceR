@@ -1,7 +1,11 @@
 Bagging - Bootstrap and aggregation together. Building models on samples of the data with substitution and then using either a majority or average of the model. It still gives model with similar bias but with reduced variance. Especially good for non linear models such as trees.
 
-```{r}
+```{r setup}
 library(ElemStatLearn)
+library(ggplot2)
+library(caret)
+library(ISLR)
+library(randomForest)
 ```
 
 ```{r}
@@ -26,4 +30,115 @@ lines(1:155,meanT,col='red',lwd=2)
 ```
 
 Resample, refit and average or apply other function
+
+## Random forests
+
+Random forest is a good example of using bagging in practice
+
+Randon forest gives more accuracy but might overfit, hard to interpret because of concensus, slow to build model
+
+```{r}
+data("iris")
+training <- createDataPartition(y=iris$Species,p=0.7,list=F)
+trainSet <- iris[training,]
+testSet <- iris[-training,]
+model <- train(Species ~ ., data=trainSet, method='rf',prox=T)
+```
+# get a single tree
+```{r}
+getTree(model$finalModel,k=2)
+```
+
+## Boosting
+
+Along with Random forest, is one of the most accurate classifiers. The basic idea is simple
+ - Take multiple weak predictors
+ - Weight them
+ 
+ One of the popular boosting algorithms is adaboost, however, it is sensitive to noise and outliers. Nice explanation here https://www.youtube.com/watch?v=LsK-xG1cLYA
+ 
+ Examples
+```{r}
+data("Wage")
+wage <- subset(Wage,select = -c(logwage))
+inTrain <- createDataPartition(y=wage$wage,p=0.7,list=F)
+training <- wage[inTrain,]
+testing <- wage[-inTrain,]
+```
+ 
+```{r}
+# gbm boosting for 
+modelB <- train(wage ~ ., method = 'gbm',data=training,verbose=F)
+modelB
+```
+```{r}
+qplot(predict(modelB,testing),wage,data=testing)
+```
+
+Model based prediction:
+It is based on bayes theorem. There is linear discriminant analysis, quadratic discriminant analysis and naive bayes. LDA fits a gaussian model on each class and the classification is based on the probability, the class with highest probability is the result. 
+
+Method = lda and nb can be used to implement lda and naive bayes using caret package.
+
+Quiz 3
+```{r}
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+```
+```{r}
+set.seed(125)
+inTrain <- createDataPartition(y=segmentationOriginal$Case,p=0.7,list = F)
+training <- segmentationOriginal[inTrain,]
+testing <- segmentationOriginal[-inTrain,]
+model <- train(Class ~ ., data = training, method = 'rpart')
+```
+
+```{r}
+library(rattle)
+fancyRpartPlot(model$finalModel)
+```
+```{r}
+library(pgmm)
+data(olive)
+olive = olive[,-1]
+```
+
+```{r}
+inTrain <- createDataPartition(y=olive$Area,p=0.7,list = F)
+training <- olive[inTrain,]
+testing <- olive[-inTrain,]
+model <- train(Area ~ ., data = training, method = 'rpart')
+newdata = as.data.frame(t(colMeans(olive)))
+predict(model,newdata)
+```
+
+```{r}
+library(ElemStatLearn)
+data(SAheart)
+set.seed(8484)
+train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+trainSA = SAheart[train,]
+testSA = SAheart[-train,]
+```
+
+```{r}
+set.seed(13234)
+modelSA <- train(chd ~ tobacco + ldl + typea + obesity + alcohol + age, data = trainSA, method = 'glm', family = 'binomial')
+```
+```{r}
+missClass = function(values,prediction){sum(((prediction > 0.5)*1) != values)/length(values)}
+missClass(testSA$chd,predict(modelSA,testSA))
+missClass(trainSA$chd,predict(modelSA,trainSA))
+```
+
+```{r}
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+vowel.train$y <- as.factor(vowel.train$y)
+vowel.test$y <- as.factor(vowel.test$y)
+set.seed(33833)
+rf <- randomForest(y ~ ., data = vowel.train, importance = T)
+varImp(rf)
+```
 
