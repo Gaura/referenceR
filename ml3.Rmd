@@ -1,0 +1,84 @@
+
+# Starting with regularization
+
+1st if you have more predictors than samples than you may get non zero value for some predictors
+but Na for the others. Regularziation allows for preudctors to have zero coefficients, the predictors which are not as informative. 
+
+Ridge regression:
+$\lambda $ term with $ \beta^2 $, ie, $\lambda \beta^2$, this is similar to keeping the sum of
+$\beta^2$ less than some constant s inversely proportional to $\lambda$. So $\lambda$ is a penalty and a value of zero would mean the same as least squares and at value of infinity all
+coeeficients would equal to zero.
+
+Lasso regression:
+Similar to ridge but the penalty term is $\lambda |\beta|$, it has a closed form solution, it basically reduced all the parameters by a gamma value and those with an absolute value less than gamma are set to zero. 
+
+There are lecture notes by Hector Corrado Bravo on practical machine learning
+
+method = ridge, lasso and relaxo in caret
+
+# Combining Classifiers
+
+We can also develop ensemble models that use multiple machine learning models to make prediction. If we have say 5 independet classifiers with 0.7 accuracy each than the majority
+vote accuracy will be 10*0.7^3*0.3^2 + 5*0.7^4*0.3 + 0.7^5. The accuracy calculation is already present in the classifiers. What percentage of data does all classifiers classify in agreement, 0.7^5. 
+
+Using bagging, boosting and random forest are methods of combining models. The others are:
+- Model stacking and
+- Model Ensembling
+
+Fitting a model that combines predictors
+
+```{r setup}
+library(caret)
+library(randomForest)
+library(ISLR)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+data(Wage)
+set.seed(123)
+wage <-  Wage %>% select(-logwage)
+inBuild <- createDataPartition(y=wage$wage,p=0.7,list=F)
+validation <- wage[-inBuild,]
+buildData <- wage[inBuild,]
+inTrain <- createDataPartition(y=buildData$wage,p=0.7,list=F)
+training <- buildData[inTrain,]
+testing <- buildData[-inTrain,]
+```
+
+Build two models on the dataset
+```{r}
+mod1 <- train(wage ~ ., data = training, method = 'glm')
+mod2 <- train(wage ~ ., data = training, method = 'rf', trControl = trainControl(method = 'cv'),number = 3 )
+```
+
+```{r}
+pred1 <- predict(mod1,testing)
+pred2 <- predict(mod2,testing)
+qplot(pred1,pred2,color=wage,data=testing)
+```
+
+
+```{r}
+predDf <- data.frame(pred1,pred2,wage=testing$wage)
+modCombine <- train(wage ~ ., data = predDf, method = 'gam')
+```
+
+```{r}
+# prediction for combined model on validation set 
+predV1 <- predict(mod1,validation)
+predV2 <- predict(mod2,validation)
+predVDf <- data.frame(predV1,predV2,wage=validation$wage)
+sqrt(sum((validation$wage - predict(mod1,validation))^2))
+sqrt(sum((validation$wage - predict(mod2,validation))^2))
+sqrt(sum((validation$wage - predict(modCombine,predVDf))^2))
+```
+
+typical model for classification involves building odd number of models and then assigning based on majority after prediction from each model
+
+
+
+
+
+
