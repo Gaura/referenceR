@@ -78,7 +78,140 @@ sqrt(sum((validation$wage - predict(modCombine,predVDf))^2))
 typical model for classification involves building odd number of models and then assigning based on majority after prediction from each model
 
 
+## Quiz
+
+```{r}
+library(ElemStatLearn)
+
+data(vowel.train)
+
+data(vowel.test)
+```
+
+```{r}
+vowel.train$y <- as.factor(vowel.train$y)
+vowel.test$y <- as.factor(vowel.test$y)
+set.seed(33833)
+modRf <- train(y ~ . , data = vowel.train, method = 'rf')
+modGbm <- train(y ~., data = vowel.train, method = 'gbm', verbose = F)
+```
+
+```{r}
+predRf <- predict(modRf, vowel.test)
+predGbm <- predict(modGbm, vowel.test)
+sum(predRf == vowel.test$y)/nrow(vowel.test)
+sum(predGbm == vowel.test$y)/nrow(vowel.test)
+agree <- which(predRf == predGbm)
+sum(predRf[agree] == vowel.test$y[agree])/length(agree)
+```
+
+Q2 
+```{r}
+library(caret)
+
+library(gbm)
+
+set.seed(3433)
+
+library(AppliedPredictiveModeling)
+
+data(AlzheimerDisease)
+
+adData = data.frame(diagnosis,predictors)
+
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+
+training = adData[ inTrain,]
+
+testing = adData[-inTrain,]
+```
+```{r}
+set.seed(62433)
+modRf <- train(diagnosis ~ ., data = training, method = 'rf')
+modGbm <- train(diagnosis ~ ., data = training, method = 'gbm', verbose = F)
+modLda <- train(diagnosis ~ ., data = training, method = 'lda')
+```
+```{r}
+p1 <- predict(modRf,testing)
+p2 <- predict(modGbm, testing)
+p3 <- predict(modLda, testing)
+predDf <- data.frame(p1,p2,p3,diagnosis= testing$diagnosis)
+modAll <- train(diagnosis ~ ., data = predDf, method = 'rf')
+```
+```{r}
+sum(p1==testing$diagnosis)/length(p1)
+sum(p2==testing$diagnosis)/length(p2)
+sum(p3==testing$diagnosis)/length(p3)
+sum(predict(modAll,testing)==testing$diagnosis)/nrow(testing)
+```
+```{r}
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+```
+
+```{r}
+library(elasticnet)
+set.seed(233)
+mod <- enet(as.matrix(training[,-9]),training$CompressiveStrength,0)
+plot.enet(mod)
+```
 
 
+## 4 forcasting
 
+```{r}
+library(lubridate) # For year() function below
+
+dat = read.csv("gaData.csv")
+
+training = dat[year(dat$date) < 2012,]
+
+testing = dat[(year(dat$date)) > 2011,]
+
+tstrain = ts(training$visitsTumblr)
+```
+
+```{r}
+library(forecast)
+```
+
+```{r}
+mod <- bats(tstrain)
+pred <- forecast(mod, h = 600)
+sum((testing$visitsTumblr < pred$upper[366:600,2]) & (testing$visitsTumblr > pred$lower[366:600,2]))/nrow(testing)
+```
+
+
+## 5
+
+```{r}
+set.seed(3523)
+
+library(AppliedPredictiveModeling)
+
+data(concrete)
+
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+
+training = concrete[ inTrain,]
+
+testing = concrete[-inTrain,]
+```
+
+```{r}
+library(e1071)
+set.seed(325)
+modSvm <- svm(CompressiveStrength ~ . , data = training)
+pred <- predict(modSvm,testing)
+sqrt(sum((pred - testing$CompressiveStrength)^2))
+```
 
