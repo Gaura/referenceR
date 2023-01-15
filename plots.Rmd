@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ## Lattice plotting system
 
 Lattice package for plotting is very efficient in visualizing data as large number of plots with few lines of
@@ -18,5 +23,19 @@ It can be used even for generating plots for 2 conditions, price ~ carat conditi
 library(ggplot2)
 xyplot(price~carat | color*cut, data = diamonds, pch = 20, xlab = "Carat", ylab = "Price", main = "Price vs carat conditioned on color and cut")
 #argument strip = FALSE will remove the condition labels
+```
+Mosaic plot: For plotting contingency tables
+```{r}
+dat <- data.frame(
+  "smoke_no" = c(7, 0),
+  "smoke_yes" = c(2, 5),
+  row.names = c("Athlete", "Non-athlete"),
+  stringsAsFactors = FALSE
+)
+colnames(dat) <- c("Non-smoker", "Smoker")
+mosaicplot(dat,
+  main = "Mosaic plot",
+  color = TRUE
+)
 ```
 
